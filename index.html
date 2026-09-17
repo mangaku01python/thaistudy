@@ -1,285 +1,56 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#082f49">
-  <title>Mike’s Thai Take Study</title>
-  <meta name="description" content="Study and quiz yourself on English expressions with take and their Thai meanings.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23082f49'/%3E%3Cpath d='M15 18h34v8H36v24h-8V26H15z' fill='%23fbbf24'/%3E%3C/svg%3E">
-  <style>
-    :root {
-      --navy:#082f49; --navy-2:#0c4a6e; --ink:#12212d; --paper:#f7fbff;
-      --white:#fff; --gold:#fbbf24; --blue:#0284c7; --line:#cbddea;
-      --green:#087f5b; --green-bg:#e9fbf4; --red:#b42318; --red-bg:#fff0ee;
-      --shadow:0 18px 50px rgba(8,47,73,.12);
-    }
-    *{box-sizing:border-box}
-    html{font-size:16px}
-    body{margin:0;background:linear-gradient(180deg,#e8f5fd 0,#f8fbfd 360px);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
-    button{font:inherit}
-    .shell{width:min(980px,calc(100% - 28px));margin:auto;padding:22px 0 56px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
-    .brand{display:flex;align-items:center;gap:12px;color:var(--navy)}
-    .mark{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:var(--navy);color:var(--gold);font-size:1.45rem;font-weight:900;box-shadow:0 8px 20px rgba(8,47,73,.18)}
-    h1{font-size:clamp(1.15rem,4vw,1.6rem);margin:0;line-height:1.15}
-    .count{color:#426176;font-size:.9rem;font-weight:700}
-    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px;background:#dcedf7;border:1px solid #c6e0f0;border-radius:16px;margin-bottom:18px}
-    .tab{border:0;border-radius:11px;padding:12px 18px;background:transparent;color:#36566a;font-weight:800;cursor:pointer}
-    .tab.active{background:white;color:var(--navy);box-shadow:0 3px 12px rgba(8,47,73,.1)}
-    .panel{display:none}.panel.active{display:block}
-    .card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
-    .quiz{padding:clamp(20px,4vw,34px)}
-    .quiz-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;color:#48677a;font-weight:750;font-size:.92rem}
-    .progress-track{height:8px;background:#e3edf3;border-radius:999px;overflow:hidden;margin-bottom:24px}
-    .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),#22a7e6);width:5%;transition:width .25s ease}
-    .direction{display:inline-block;padding:5px 10px;background:#e0f2fe;color:#075985;border-radius:999px;font-size:.78rem;font-weight:850;letter-spacing:.02em}
-    .prompt{margin:16px 0 8px;text-align:center;color:#4a6678;font-weight:700}
-    .question{min-height:112px;display:grid;place-items:center;text-align:center;margin:0 0 24px}
-    .question.english{font-size:clamp(2.15rem,8vw,4.2rem);line-height:1.05;color:var(--navy);font-weight:900}
-    .question.thai{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:clamp(3rem,13vw,6.6rem);line-height:1.18;color:var(--navy);font-weight:800}
-    .answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .answer{min-height:70px;padding:14px 16px;border:2px solid #d4e3ec;border-radius:16px;background:#fff;color:var(--ink);text-align:left;font-weight:800;cursor:pointer;transition:transform .12s,border-color .12s,background .12s}
-    .answer:hover:not(:disabled){border-color:var(--blue);transform:translateY(-1px)}
-    .answer:focus-visible,.tab:focus-visible,.primary:focus-visible,.secondary:focus-visible{outline:4px solid rgba(2,132,199,.28);outline-offset:2px}
-    .answer .letter{display:inline-grid;place-items:center;width:29px;height:29px;margin-right:10px;border-radius:8px;background:#e7f2f8;color:#18526f}
-    .answer.thai-answer{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:1.4rem}
-    .answer.correct{border-color:var(--green);background:var(--green-bg);color:#075e45}
-    .answer.wrong{border-color:var(--red);background:var(--red-bg);color:#8f1d15}
-    .feedback{display:none;margin-top:20px;border-radius:18px;padding:18px;border:1px solid}
-    .feedback.show{display:block}
-    .feedback.good{background:var(--green-bg);border-color:#a9e5d0}
-    .feedback.bad{background:var(--red-bg);border-color:#ffc9c3}
-    .feedback-title{font-size:1.15rem;font-weight:900;margin-bottom:8px}
-    .feedback-thai{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:clamp(2rem,8vw,3.4rem);font-weight:800;color:var(--navy);line-height:1.3}
-    .roman{color:#34596f;font-weight:750}
-    .meaning{font-weight:850;margin-top:3px}
-    .explain{margin-top:9px;color:#4b6170}
-    .actions{display:flex;gap:10px;margin-top:18px}
-    .primary,.secondary{border:0;border-radius:13px;padding:13px 18px;font-weight:850;cursor:pointer}
-    .primary{background:var(--navy);color:#fff;flex:1}
-    .primary:hover{background:var(--navy-2)}
-    .secondary{background:#e5eff5;color:var(--navy)}
-    .results{text-align:center;padding:28px 8px}
-    .score{font-size:clamp(3.7rem,16vw,6.8rem);line-height:1;color:var(--navy);font-weight:950;margin:16px 0 8px}
-    .results h2{margin:0;font-size:1.55rem}
-    .results p{color:#526c7c;margin:4px 0 20px}
-    .study-intro{padding:20px 22px;margin-bottom:14px}
-    .study-intro h2{margin:0 0 4px;color:var(--navy)}
-    .study-intro p{margin:0;color:#4a687a}
-    .notice{margin-top:13px;padding:11px 13px;border-radius:12px;background:#fff7db;border-left:4px solid var(--gold);color:#654a00;font-size:.9rem}
-    .vocab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .vocab-card{padding:18px;border-radius:18px;background:#fff;border:1px solid var(--line)}
-    .vocab-number{color:#7991a0;font-size:.78rem;font-weight:850}
-    .vocab-english{font-size:1.38rem;color:var(--navy);font-weight:900;margin:2px 0}
-    .teacher-sound{font-family:Tahoma,"Noto Sans Thai",sans-serif;color:#557487;font-size:.95rem}
-    .vocab-thai{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:2rem;line-height:1.35;font-weight:800;margin-top:9px}
-    .vocab-roman{color:#41667b;font-weight:700}
-    .usage{margin-top:7px;color:#526a79;font-size:.88rem}
-    footer{text-align:center;color:#678090;font-size:.84rem;margin-top:26px}
-    [hidden]{display:none!important}
-    @media(max-width:650px){
-      .shell{width:min(100% - 20px,980px);padding-top:14px}
-      header{margin:0 4px 14px}
-      .count{display:none}
-      .quiz{padding:18px 15px}
-      .answers{grid-template-columns:1fr}
-      .answer{min-height:62px}
-      .vocab{grid-template-columns:1fr}
-      .actions{flex-direction:column}
-      .secondary{order:2}
-    }
-    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
-  </style>
-</head>
-<body>
-  <main class="shell">
-    <header>
-      <div class="brand"><div class="mark">ท</div><h1>Mike’s Thai Take Study</h1></div>
-      <div class="count">20 expressions</div>
-    </header>
-
-    <nav class="tabs" aria-label="Study modes">
-      <button class="tab active" data-panel="quizPanel" aria-selected="true">Quiz</button>
-      <button class="tab" data-panel="studyPanel" aria-selected="false">Study Guide</button>
-    </nav>
-
-    <section id="quizPanel" class="panel active">
-      <div class="card quiz">
-        <div id="quizPlay">
-          <div class="quiz-top"><span id="progressText">Question 1 of 20</span><span id="scoreText">Score: 0</span></div>
-          <div class="progress-track" aria-hidden="true"><div id="progressFill" class="progress-fill"></div></div>
-          <span id="direction" class="direction">THAI → ENGLISH</span>
-          <p id="prompt" class="prompt">What does this mean?</p>
-          <div id="question" class="question thai" lang="th">เข้าควบคุม</div>
-          <div id="answers" class="answers"></div>
-          <div id="feedback" class="feedback" aria-live="polite">
-            <div id="feedbackTitle" class="feedback-title"></div>
-            <div id="feedbackThai" class="feedback-thai" lang="th"></div>
-            <div id="feedbackRoman" class="roman"></div>
-            <div id="feedbackMeaning" class="meaning"></div>
-            <div id="feedbackExplain" class="explain"></div>
-            <div class="actions">
-              <button id="showGuide" class="secondary">Study Guide</button>
-              <button id="next" class="primary">Next Question →</button>
-            </div>
-          </div>
-        </div>
-        <div id="results" class="results" hidden>
-          <h2>Quiz complete</h2>
-          <div id="finalScore" class="score">0/20</div>
-          <p id="resultMessage"></p>
-          <button id="restart" class="primary">Start a New Quiz</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="studyPanel" class="panel">
-      <div class="card study-intro">
-        <h2>Study Guide</h2>
-        <p>English phrase → teacher’s sound spelling → Thai meaning → simple Roman pronunciation.</p>
-        <div class="notice"><strong>Source note:</strong> your teacher’s final line ended at “Take a shower — เทค อะ…”. The common Thai meaning <strong>อาบน้ำ</strong> is shown below, while the missing sound spelling remains marked incomplete.</div>
-      </div>
-      <div id="vocabList" class="vocab"></div>
-    </section>
-    <footer>Made for focused practice on phone, tablet, or computer.</footer>
-  </main>
-
-  <script>
-    const vocabulary = [
-      {en:"Take out / take away", sound:"เอาออกไป", th:"เอาออกไป", roman:"ao ook bpai", note:"Remove something or carry it outside."},
-      {en:"Take turns", sound:"เทค เทิร์น", th:"ผลัดกัน", roman:"phlat gan", note:"Do something one after another. Usually said as “take turns.”"},
-      {en:"Take sides", sound:"เทค ไซด์", th:"เข้าข้าง", roman:"khao khaang", note:"Support one person or group in a disagreement."},
-      {en:"Take place", sound:"เทค เพลส", th:"เกิดขึ้น", roman:"goet kheun", note:"Happen or occur."},
-      {en:"Take back", sound:"เทค แบ็ก", th:"นำกลับคืนมา", roman:"nam glap kheun maa", note:"Return something or bring it back."},
-      {en:"Take after", sound:"เทค อาฟเตอร์ / แอฟเตอร์", th:"มีหน้าตาคล้าย", roman:"mii naa-dtaa khlaai", note:"Look or behave like an older family member."},
-      {en:"Take up", sound:"เทค อัพ", th:"เริ่มต้นทำ", roman:"roem dton tham", note:"Begin a new activity or hobby."},
-      {en:"Take control", sound:"เทค คอนโทรล", th:"ควบคุม", roman:"khuap khum", note:"Gain or exercise control."},
-      {en:"Take over", sound:"เทค โอเวอร์", th:"เข้าควบคุม", roman:"khao khuap khum", note:"Assume control from someone else."},
-      {en:"Take time", sound:"เทค ไทม์", th:"ใช้เวลา", roman:"chai way-laa", note:"Require or use time."},
-      {en:"Take notes", sound:"เทค โน้ต", th:"จด / จดบันทึก", roman:"jot / jot ban-theuk", note:"Write important information down."},
-      {en:"Take a look", sound:"เทค อะ ลุค", th:"ดู / มองดู", roman:"duu / maawng duu", note:"Look at something."},
-      {en:"Take a guess", sound:"เทค อะ เกส", th:"เดา / เดาดู", roman:"dao / dao duu", note:"Give an answer even though you are not certain."},
-      {en:"Take a risk", sound:"เทค อะ ริสก์", th:"เสี่ยง", roman:"siang", note:"Do something that might have a bad result."},
-      {en:"Take a chance", sound:"เทค อะ แชนซ์", th:"ลองเสี่ยงดู", roman:"laawng siang duu", note:"Try despite uncertainty because there may be an opportunity."},
-      {en:"Take a break", sound:"เทค อะ เบรก", th:"พักเบรก", roman:"phak break", note:"Stop working briefly."},
-      {en:"Take a rest", sound:"เทค อะ เรสต์", th:"พักผ่อน", roman:"phak phaawn", note:"Relax to recover your energy."},
-      {en:"Take a bow", sound:"เทค อะ บาว", th:"โค้งคำนับ", roman:"khong kham-nap", note:"Bend forward to show respect or accept applause."},
-      {en:"Take an exam", sound:"เทค แอน เอ็กแซม", th:"สอบ", roman:"saawp", note:"Sit for or complete an examination."},
-      {en:"Take a shower", sound:"เทค อะ… (source incomplete)", th:"อาบน้ำ", roman:"aap naam", note:"Wash your body in a shower. The teacher’s sound spelling was cut off."}
-    ];
-
-    const $ = id => document.getElementById(id);
-    const shuffle = array => {
-      const a=[...array];
-      for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
-      return a;
-    };
-
-    let questions=[], index=0, score=0, answered=false;
-
-    function buildQuestions(){
-      const directions = shuffle(vocabulary.map((item,i)=>({item,index:i,toEnglish:i%2===0})));
-      questions = directions.map(q=>({...q,toEnglish:Math.random()<.5}));
-      index=0; score=0; answered=false;
-    }
-
-    function distractors(correctIndex){
-      return shuffle(vocabulary.map((v,i)=>({v,i})).filter(x=>x.i!==correctIndex)).slice(0,3);
-    }
-
-    function renderQuestion(){
-      answered=false;
-      $("feedback").className="feedback";
-      $("feedback").removeAttribute("data-state");
-      const q=questions[index], {item}=q;
-      $("progressText").textContent=`Question ${index+1} of ${questions.length}`;
-      $("scoreText").textContent=`Score: ${score}`;
-      $("progressFill").style.width=`${((index+1)/questions.length)*100}%`;
-      $("direction").textContent=q.toEnglish?"THAI → ENGLISH":"ENGLISH → THAI";
-      $("prompt").textContent=q.toEnglish?"What does this mean?":"Choose the Thai meaning.";
-      $("question").textContent=q.toEnglish?item.th:item.en;
-      $("question").className="question "+(q.toEnglish?"thai":"english");
-      $("question").lang=q.toEnglish?"th":"en";
-      const options=shuffle([{v:item,i:q.index},...distractors(q.index)]);
-      $("answers").innerHTML="";
-      options.forEach((opt,n)=>{
-        const btn=document.createElement("button");
-        btn.className="answer"+(!q.toEnglish?" thai-answer":"");
-        btn.dataset.index=opt.i;
-        btn.innerHTML=`<span class="letter">${"ABCD"[n]}</span><span>${q.toEnglish?opt.v.en:opt.v.th}</span>`;
-        btn.addEventListener("click",()=>choose(btn,opt.i));
-        $("answers").appendChild(btn);
-      });
-      $("next").textContent=index===questions.length-1?"See My Score →":"Next Question →";
-    }
-
-    function choose(button,chosenIndex){
-      if(answered)return;
-      answered=true;
-      const q=questions[index], correct=chosenIndex===q.index;
-      if(correct)score++;
-      [...$("answers").children].forEach(btn=>{
-        btn.disabled=true;
-        if(Number(btn.dataset.index)===q.index)btn.classList.add("correct");
-      });
-      if(!correct)button.classList.add("wrong");
-      $("scoreText").textContent=`Score: ${score}`;
-      $("feedback").className="feedback show "+(correct?"good":"bad");
-      $("feedbackTitle").textContent=correct?"✓ Correct":"✗ Not quite";
-      $("feedbackThai").textContent=q.item.th;
-      $("feedbackRoman").textContent=q.item.roman;
-      $("feedbackMeaning").textContent=q.item.en;
-      const chosen=vocabulary[chosenIndex];
-      $("feedbackExplain").textContent=correct
-        ? q.item.note
-        : `You chose “${q.toEnglish?chosen.en:chosen.th}.” The correct match is “${q.item.en}” = ${q.item.th}. ${q.item.note}`;
-      $("feedback").scrollIntoView({behavior:"smooth",block:"nearest"});
-    }
-
-    function finish(){
-      $("quizPlay").hidden=true;
-      $("results").hidden=false;
-      $("finalScore").textContent=`${score}/${questions.length}`;
-      const pct=score/questions.length;
-      $("resultMessage").textContent=pct===1?"Perfect score — excellent work.":pct>=.8?"Strong work. One more round will lock it in.":pct>=.6?"Good progress. Review the missed meanings, then try again.":"Use the Study Guide once, then take another round.";
-    }
-
-    function start(){
-      buildQuestions();
-      $("results").hidden=true;
-      $("quizPlay").hidden=false;
-      renderQuestion();
-    }
-
-    $("next").addEventListener("click",()=>{if(!answered)return;if(index===questions.length-1)finish();else{index++;renderQuestion()}});
-    $("restart").addEventListener("click",start);
-    $("showGuide").addEventListener("click",()=>switchPanel("studyPanel"));
-
-    function switchPanel(id){
-      document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===id));
-      document.querySelectorAll(".tab").forEach(t=>{
-        const active=t.dataset.panel===id;
-        t.classList.toggle("active",active);
-        t.setAttribute("aria-selected",String(active));
-      });
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-    document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>switchPanel(t.dataset.panel)));
-
-    vocabulary.forEach((v,i)=>{
-      const card=document.createElement("article");
-      card.className="vocab-card";
-      card.innerHTML=`<div class="vocab-number">${String(i+1).padStart(2,"0")}</div>
-        <div class="vocab-english">${v.en}</div>
-        <div class="teacher-sound" lang="th">${v.sound}</div>
-        <div class="vocab-thai" lang="th">${v.th}</div>
-        <div class="vocab-roman">${v.roman}</div>
-        <div class="usage">${v.note}</div>`;
-      $("vocabList").appendChild(card);
-    });
-
-    start();
-  </script>
-</body>
-</html>
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#082f49"><title>Mike’s Thai Study</title>
+<meta name="description" content="Interactive Thai study guides and multiple-choice quizzes.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23082f49'/%3E%3Cpath d='M15 18h34v8H36v24h-8V26H15z' fill='%23fbbf24'/%3E%3C/svg%3E">
+<style>
+:root{--navy:#082f49;--navy2:#0c4a6e;--ink:#12212d;--gold:#fbbf24;--blue:#0284c7;--line:#cbddea;--green:#087f5b;--greenbg:#e9fbf4;--red:#b42318;--redbg:#fff0ee;--shadow:0 18px 50px rgba(8,47,73,.12)}
+*{box-sizing:border-box}html{font-size:16px}body{margin:0;background:linear-gradient(180deg,#e8f5fd,#f8fbfd 380px);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}button{font:inherit}.shell{width:min(980px,calc(100% - 28px));margin:auto;padding:22px 0 56px}header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:12px;color:var(--navy)}.mark{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--navy);color:var(--gold);font-size:1.5rem;font-weight:900;box-shadow:0 8px 20px rgba(8,47,73,.18)}h1{font-size:clamp(1.2rem,4vw,1.65rem);margin:0}.home-btn{border:0;background:#dcecf5;color:var(--navy);border-radius:12px;padding:10px 14px;font-weight:850;cursor:pointer}
+.home-intro{text-align:center;padding:28px 10px 22px}.home-intro h2{font-size:clamp(2rem,7vw,3.5rem);line-height:1.05;color:var(--navy);margin:0 0 10px}.home-intro p{font-size:1.05rem;color:#4d6a7a;margin:0}.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}.guide-card{display:flex;flex-direction:column;min-height:310px;padding:26px;border-radius:24px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.guide-icon{display:grid;place-items:center;width:64px;height:58px;border-radius:17px;background:#e0f2fe;color:var(--navy);font-size:1.1rem;font-weight:950}.guide-card:nth-child(2) .guide-icon{background:#fff1c2;font-size:1.6rem}.guide-card h3{font-size:1.55rem;line-height:1.15;color:var(--navy);margin:18px 0 8px}.guide-card p{color:#557080;margin:0 0 20px}.guide-meta{margin-top:auto;color:#6f8796;font-size:.9rem;font-weight:700}.open-guide{width:100%;border:0;border-radius:13px;padding:14px 18px;margin-top:14px;background:var(--navy);color:#fff;font-weight:900;cursor:pointer}
+.guide-heading{margin:0 0 16px;padding:0 2px}.guide-heading h2{margin:0;color:var(--navy);font-size:clamp(1.55rem,5vw,2.25rem)}.guide-heading p{margin:2px 0 0;color:#577182}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px;background:#dcedf7;border:1px solid #c6e0f0;border-radius:16px;margin-bottom:18px}.tab{border:0;border-radius:11px;padding:12px 18px;background:transparent;color:#36566a;font-weight:800;cursor:pointer}.tab.active{background:#fff;color:var(--navy);box-shadow:0 3px 12px rgba(8,47,73,.1)}.panel{display:none}.panel.active{display:block}.card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}.quiz{padding:clamp(20px,4vw,34px)}
+.quiz-top{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;color:#48677a;font-weight:750;font-size:.92rem}.track{height:8px;background:#e3edf3;border-radius:999px;overflow:hidden;margin-bottom:24px}.fill{height:100%;background:linear-gradient(90deg,var(--blue),#22a7e6);transition:width .25s}.direction{display:inline-block;padding:5px 10px;background:#e0f2fe;color:#075985;border-radius:999px;font-size:.78rem;font-weight:850}.prompt{margin:16px 0 8px;text-align:center;color:#4a6678;font-weight:700}.question{min-height:112px;display:grid;place-items:center;text-align:center;margin:0 0 24px}.question.english{font-size:clamp(1.85rem,7vw,3.8rem);line-height:1.08;color:var(--navy);font-weight:900}.question.thai{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:clamp(3rem,13vw,6.6rem);line-height:1.18;color:var(--navy);font-weight:800}.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}.answer{min-height:70px;padding:14px 16px;border:2px solid #d4e3ec;border-radius:16px;background:#fff;text-align:left;font-weight:800;cursor:pointer}.answer:hover:not(:disabled){border-color:var(--blue)}.letter{display:inline-grid;place-items:center;width:29px;height:29px;margin-right:10px;border-radius:8px;background:#e7f2f8;color:#18526f}.thai-answer{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:1.4rem}.answer.correct{border-color:var(--green);background:var(--greenbg);color:#075e45}.answer.wrong{border-color:var(--red);background:var(--redbg);color:#8f1d15}
+.feedback{display:none;margin-top:20px;border-radius:18px;padding:18px;border:1px solid}.feedback.show{display:block}.feedback.good{background:var(--greenbg);border-color:#a9e5d0}.feedback.bad{background:var(--redbg);border-color:#ffc9c3}.feedback-title{font-size:1.15rem;font-weight:900}.feedback-thai{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:clamp(2rem,8vw,3.4rem);font-weight:800;color:var(--navy);line-height:1.3}.roman{color:#34596f;font-weight:750}.meaning{font-weight:850}.explain{margin-top:9px;color:#4b6170}.actions{display:flex;gap:10px;margin-top:18px}.primary,.secondary{border:0;border-radius:13px;padding:13px 18px;font-weight:850;cursor:pointer}.primary{background:var(--navy);color:#fff;flex:1}.secondary{background:#e5eff5;color:var(--navy)}.results{text-align:center;padding:28px 8px}.score{font-size:clamp(3.7rem,16vw,6.8rem);line-height:1;color:var(--navy);font-weight:950;margin:16px}.results h2{margin:0}
+.study-intro{padding:20px 22px;margin-bottom:14px}.study-intro h2{margin:0;color:var(--navy)}.study-intro p{margin:0;color:#4a687a}.notice{margin-top:13px;padding:11px 13px;border-radius:12px;background:#fff7db;border-left:4px solid var(--gold);color:#654a00;font-size:.9rem}.vocab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.vocab-card{padding:18px;border-radius:18px;background:#fff;border:1px solid var(--line)}.num{color:#7991a0;font-size:.78rem;font-weight:850}.en{font-size:1.38rem;color:var(--navy);font-weight:900}.sound{font-family:Tahoma,"Noto Sans Thai",sans-serif;color:#557487}.th{font-family:Tahoma,"Noto Sans Thai",sans-serif;font-size:2.2rem;line-height:1.35;font-weight:800;margin-top:9px}.rom{color:#41667b;font-weight:700}.use{margin-top:7px;color:#526a79;font-size:.92rem}footer{text-align:center;color:#678090;font-size:.84rem;margin-top:26px}[hidden]{display:none!important}button:focus-visible{outline:4px solid rgba(2,132,199,.28);outline-offset:2px}
+@media(max-width:650px){.shell{width:calc(100% - 20px);padding-top:14px}.guide-grid,.answers,.vocab{grid-template-columns:1fr}.guide-card{min-height:260px}.quiz{padding:18px 15px}.actions{flex-direction:column}.secondary{order:2}}
+</style></head><body><main class="shell">
+<header><div class="brand"><div class="mark">ท</div><h1>Mike’s Thai Study</h1></div><button id="homeButton" class="home-btn" hidden>← All Guides</button></header>
+<section id="homeScreen"><div class="home-intro"><h2>Choose a study guide</h2><p>Study first or jump directly into a quiz.</p></div><div class="guide-grid">
+<article class="guide-card"><div class="guide-icon">TAKE</div><h3>Take Expressions</h3><p>Learn common English expressions with “take” and their Thai meanings.</p><div class="guide-meta">20 terms · English ↔ Thai</div><button class="open-guide" data-guide="take">Open Study Guide</button></article>
+<article class="guide-card"><div class="guide-icon">ตา</div><h3>See, Look, Watch & Observe</h3><p>Master the differences between เห็น, ดู, มอง, มองดู and มองเห็น.</p><div class="guide-meta">15 situations · Focus: ดู vs มอง</div><button class="open-guide" data-guide="vision">Open Study Guide</button></article>
+</div></section>
+<section id="guideScreen" hidden><div class="guide-heading"><h2 id="guideTitle"></h2><p id="guideSubtitle"></p></div>
+<nav class="tabs"><button class="tab active" data-panel="quizPanel">Quiz</button><button class="tab" data-panel="studyPanel">Study Guide</button></nav>
+<section id="quizPanel" class="panel active"><div class="card quiz"><div id="quizPlay">
+<div class="quiz-top"><span id="progressText"></span><span id="scoreText">Score: 0</span></div><div class="track"><div id="progressFill" class="fill"></div></div><span id="direction" class="direction"></span><p id="prompt" class="prompt"></p><div id="question" class="question"></div><div id="answers" class="answers"></div>
+<div id="feedback" class="feedback"><div id="feedbackTitle" class="feedback-title"></div><div id="feedbackThai" class="feedback-thai"></div><div id="feedbackRoman" class="roman"></div><div id="feedbackMeaning" class="meaning"></div><div id="feedbackExplain" class="explain"></div><div class="actions"><button id="showGuide" class="secondary">Study Guide</button><button id="next" class="primary">Next Question →</button></div></div></div>
+<div id="results" class="results" hidden><h2>Quiz complete</h2><div id="finalScore" class="score"></div><p id="resultMessage"></p><button id="restart" class="primary">Start a New Quiz</button></div></div></section>
+<section id="studyPanel" class="panel"><div class="card study-intro"><h2>Study Guide</h2><p>Thai + simple Roman + English + usage rule.</p><div id="studyNotice" class="notice"></div></div><div id="vocabList" class="vocab"></div></section>
+</section><footer>Large Thai · Simple Roman · Clear explanations</footer></main>
+<script>
+const take=[
+["Take out / take away","เอาออกไป","ao ook bpai","Remove something or carry it outside.","เอาออกไป"],["Take turns","ผลัดกัน","phlat gan","Do something one after another.","เทค เทิร์น"],["Take sides","เข้าข้าง","khao khaang","Support one person or group.","เทค ไซด์"],["Take place","เกิดขึ้น","goet kheun","Happen or occur.","เทค เพลส"],["Take back","นำกลับคืนมา","nam glap kheun maa","Return or bring something back.","เทค แบ็ก"],["Take after","มีหน้าตาคล้าย","mii naa-dtaa khlaai","Look like an older family member.","เทค อาฟเตอร์"],["Take up","เริ่มต้นทำ","roem dton tham","Begin a new activity or hobby.","เทค อัพ"],["Take control","ควบคุม","khuap khum","Gain or exercise control.","เทค คอนโทรล"],["Take over","เข้าควบคุม","khao khuap khum","Assume control from someone else.","เทค โอเวอร์"],["Take time","ใช้เวลา","chai way-laa","Require or use time.","เทค ไทม์"],["Take notes","จด / จดบันทึก","jot / jot ban-theuk","Write important information down.","เทค โน้ต"],["Take a look","ดู / มองดู","duu / mong duu","Look at something.","เทค อะ ลุค"],["Take a guess","เดา / เดาดู","dao / dao duu","Give an answer without certainty.","เทค อะ เกส"],["Take a risk","เสี่ยง","siang","Do something that may have a bad result.","เทค อะ ริสก์"],["Take a chance","ลองเสี่ยงดู","laawng siang duu","Try despite uncertainty.","เทค อะ แชนซ์"],["Take a break","พักเบรก","phak break","Stop working briefly.","เทค อะ เบรก"],["Take a rest","พักผ่อน","phak phaawn","Relax to recover energy.","เทค อะ เรสต์"],["Take a bow","โค้งคำนับ","khong kham-nap","Bend forward to show respect.","เทค อะ บาว"],["Take an exam","สอบ","saawp","Sit for an examination.","เทค แอน เอ็กแซม"],["Take a shower","อาบน้ำ","aap naam","Wash your body in a shower.","เทค อะ… (source incomplete)"]
+].map(x=>({en:x[0],th:x[1],roman:x[2],note:x[3],sound:x[4]}));
+const vision=[
+{en:"See / notice",th:"เห็น",roman:"hen",note:"Visual perception: notice something without deliberately directing your eyes."},
+{en:"Watch / check / examine",th:"ดู",roman:"duu",note:"An intentional action: watch TV, check a phone or examine an engine."},
+{en:"Look / direct your gaze",th:"มอง",roman:"mong",note:"Direct your eyes toward a person, object, place or direction."},
+{en:"Take a look / observe",th:"มองดู",roman:"mong duu",note:"Look at or observe something with attention."},
+{en:"Be able to see / visible",th:"มองเห็น",roman:"mong hen",note:"Emphasizes that something can be seen or is visible."}
+];
+const situations=[
+["I see a car.",0,"ฉันเห็นรถ","chan hen rot","Use เห็น for visually noticing the car."],["Watch television.",1,"ดูทีวี","duu thii-wii","Use ดู for intentionally watching."],["Look to your left before crossing the road.",2,"มองไปทางซ้ายก่อนข้ามถนน","mong bpai thaang saai gaawn khaam tha-non","Use มอง to direct your eyes toward a direction."],["Can you see the mountain?",4,"คุณมองเห็นภูเขาไหม","khun mong hen phuu-khao mai","Use มองเห็น for being able to see."],["Take a look at this.",3,"มองดูนี่","mong duu nii","มองดู means take a look or observe."],["Check your phone.",1,"ดูโทรศัพท์ของคุณ","duu thoo-ra-sap khawng khun","Use ดู for checking something."],["Look toward the door.",2,"มองไปทางประตู","mong bpai thaang bpra-dtuu","มอง directs the gaze toward the door."],["Yesterday I saw an accident.",0,"เมื่อวานฉันเห็นอุบัติเหตุ","muea-waan chan hen u-bat-ti-het","เห็น describes visual perception."],["Examine the motorcycle engine.",1,"ดูเครื่องยนต์มอเตอร์ไซค์","duu khrueang-yon maw-dter-sai","Use ดู when examining the engine."],["Look straight ahead.",2,"มองไปข้างหน้า","mong bpai khaang naa","Use มอง to direct your eyes forward."],["Observe what he is doing.",3,"มองดูว่าเขากำลังทำอะไร","mong duu waa khao gam-lang tham a-rai","มองดู fits deliberate observation."],["Watch a movie.",1,"ดูหนัง","duu nang","Use ดู for watching a movie."],["I see a bird in the tree.",0,"ฉันเห็นนกบนต้นไม้","chan hen nok bon dton-mai","เห็น means visually notice."],["I cannot see the road clearly.",4,"ฉันมองเห็นถนนไม่ชัด","chan mong hen tha-non mai chat","มองเห็น expresses visibility."],["He is looking, but he does not see it.",2,"เขามอง แต่ไม่เห็น","khao mong dtae mai hen","มอง is looking; เห็น is the result of seeing."]
+].map(x=>({en:x[0],answer:x[1],full:x[2],roman:x[3],note:x[4]}));
+const guides={take:{title:"Take Expressions",sub:"20 common expressions and their Thai meanings.",vocab:take,notice:"The teacher’s final line ended at “Take a shower — เทค อะ…”. The common Thai meaning อาบน้ำ is included."},vision:{title:"See, Look, Watch & Observe",sub:"Practice เห็น, ดู, มอง, มองดู and มองเห็น.",vocab:vision,notice:"Key contrast: มอง is the action of looking. เห็น is the result of seeing. มอง แต่ไม่เห็น = looking, but not seeing."}};
+const $=x=>document.getElementById(x),shuffle=a=>{let b=[...a];for(let i=b.length-1;i;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
+let key=null,qs=[],pos=0,score=0,answered=false;
+function openGuide(k){key=k;let g=guides[k];$("homeScreen").hidden=true;$("guideScreen").hidden=false;$("homeButton").hidden=false;$("guideTitle").textContent=g.title;$("guideSubtitle").textContent=g.sub;$("studyNotice").textContent=g.notice;renderStudy();switchPanel("quizPanel");start();scrollTo(0,0)}
+function home(){$("guideScreen").hidden=true;$("homeScreen").hidden=false;$("homeButton").hidden=true;scrollTo(0,0)}
+function renderStudy(){$("vocabList").innerHTML="";guides[key].vocab.forEach((v,i)=>{let c=document.createElement("article");c.className="vocab-card";c.innerHTML=`<div class=num>${String(i+1).padStart(2,"0")}</div><div class=en>${v.en}</div>${v.sound?`<div class=sound>${v.sound}</div>`:""}<div class=th>${v.th}</div><div class=rom>${v.roman}</div><div class=use>${v.note}</div>`;$("vocabList").appendChild(c)})}
+function build(){qs=key==="vision"?shuffle(situations.map((x,i)=>({mode:"s",item:x,index:i}))):shuffle(take.map((x,i)=>({mode:"v",item:x,index:i,toEn:Math.random()<.5})));pos=score=0}
+function options(q){if(q.mode==="s")return shuffle(vision.map((v,i)=>({label:v.th,i})));let o=shuffle(take.map((v,i)=>({v,i})).filter(x=>x.i!==q.index)).slice(0,3);return shuffle([{v:q.item,i:q.index},...o]).map(x=>({label:q.toEn?x.v.en:x.v.th,i:x.i}))}
+function render(){answered=false;$("feedback").className="feedback";let q=qs[pos];$("progressText").textContent=`Question ${pos+1} of ${qs.length}`;$("scoreText").textContent=`Score: ${score}`;$("progressFill").style.width=`${(pos+1)/qs.length*100}%`;if(q.mode==="s"){$("direction").textContent="CHOOSE THE BEST THAI WORD";$("prompt").textContent="Which word fits this situation?";$("question").textContent=q.item.en;$("question").className="question english"}else{$("direction").textContent=q.toEn?"THAI → ENGLISH":"ENGLISH → THAI";$("prompt").textContent=q.toEn?"What does this mean?":"Choose the Thai meaning.";$("question").textContent=q.toEn?q.item.th:q.item.en;$("question").className="question "+(q.toEn?"thai":"english")}$("answers").innerHTML="";options(q).forEach((o,n)=>{let b=document.createElement("button");b.className="answer "+((q.mode==="s"||!q.toEn)?"thai-answer":"");b.dataset.i=o.i;b.innerHTML=`<span class=letter>${"ABCDE"[n]}</span>${o.label}`;b.onclick=()=>choose(b,o.i);$("answers").appendChild(b)});$("next").textContent=pos===qs.length-1?"See My Score →":"Next Question →"}
+function choose(btn,n){if(answered)return;answered=true;let q=qs[pos],right=q.mode==="s"?q.item.answer:q.index,ok=n===right;if(ok)score++;[...$("answers").children].forEach(b=>{b.disabled=true;if(+b.dataset.i===right)b.classList.add("correct")});if(!ok)btn.classList.add("wrong");$("scoreText").textContent=`Score: ${score}`;$("feedback").className="feedback show "+(ok?"good":"bad");$("feedbackTitle").textContent=ok?"✓ Correct":"✗ Not quite";let x=q.mode==="s"?{th:q.item.full,roman:q.item.roman,en:q.item.en,note:q.item.note}:q.item;$("feedbackThai").textContent=x.th;$("feedbackRoman").textContent=x.roman;$("feedbackMeaning").textContent=x.en;$("feedbackExplain").textContent=x.note;$("feedback").scrollIntoView({behavior:"smooth",block:"nearest"})}
+function start(){build();$("results").hidden=true;$("quizPlay").hidden=false;render()}function finish(){$("quizPlay").hidden=true;$("results").hidden=false;$("finalScore").textContent=`${score}/${qs.length}`;let p=score/qs.length;$("resultMessage").textContent=p===1?"Perfect score!":p>=.8?"Strong work.":p>=.6?"Good progress. Review and try again.":"Study the guide once, then try again."}
+function switchPanel(id){document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("active",x.id===id));document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.panel===id))}
+document.querySelectorAll(".open-guide").forEach(b=>b.onclick=()=>openGuide(b.dataset.guide));document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchPanel(b.dataset.panel));$("homeButton").onclick=home;$("showGuide").onclick=()=>switchPanel("studyPanel");$("next").onclick=()=>{if(!answered)return;if(pos===qs.length-1)finish();else{pos++;render()}};$("restart").onclick=start;
+</script></body></html>
