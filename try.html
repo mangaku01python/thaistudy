@@ -64,4 +64,60 @@ if(!lineFeedbackModal||!lineFeedbackSummary||!lineFeedbackText||!lineFeedbackSta
 let pendingFeedback=null;
 function openLineFeedback(data){pendingFeedback=data;lineFeedbackSummary.textContent=data.questionNumber?"Question "+data.questionNumber+" · "+data.guide:data.guide+" · General study guide feedback";lineFeedbackText.value="";lineFeedbackStatus.textContent="";lineFeedbackModal.hidden=false;lineFeedbackText.focus()}lineFeedbackCancel.addEventListener("click",()=>{lineFeedbackModal.hidden=true});
 lineFeedbackModal.addEventListener("click",e=>{if(e.target===lineFeedbackModal)lineFeedbackModal.hidden=true});lineFeedbackSend.addEventListener("click",async()=>{let feedback=lineFeedbackText.value.trim();if(!feedback)return lineFeedbackText.focus();let p=getProfile()||{};lineFeedbackSend.disabled=true;lineFeedbackStatus.textContent="Sending…";try{let r=await fetch(FEEDBACK_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...pendingFeedback,studentName:p.name||"Not provided",studentEmail:p.email||"Not provided",feedback})});if(!r.ok)throw new Error("send failed");lineFeedbackStatus.textContent="✓ Feedback sent. Thank you.";setTimeout(()=>lineFeedbackModal.hidden=true,900)}catch(e){lineFeedbackStatus.textContent="Could not send feedback. Please try again."}finally{lineFeedbackSend.disabled=false}});suggest.addEventListener("click",()=>{let x=q[i];openLineFeedback({guide:"Two Ways to Say Try in Thai",questionNumber:(i+1)+" of "+q.length,english:x[0]+"\n"+x[3],thai:x[1]+"\n"+x[2],answer:x[4]})});render();</script>
-</body></html>
+<script src="shared.js"></script>
+<script>
+(function () {
+	const progressKey = 'thaiStudyProgress_try';
+	const progressVersion = 1;
+
+	function readProgress() {
+		try {
+			const saved = JSON.parse(localStorage.getItem(progressKey) || 'null');
+			if (!saved || saved.version !== progressVersion || !Number.isInteger(saved.index) || saved.index < 0 || saved.index >= q.length || !Number.isInteger(saved.score) || saved.score < 0 || saved.score > q.length || typeof saved.answered !== 'boolean' || typeof saved.completed !== 'boolean') return null;
+			return saved;
+		} catch (error) {
+			return null;
+		}
+	}
+
+	function saveTryProgress() {
+		try {
+			localStorage.setItem(progressKey, JSON.stringify({ version: progressVersion, index: i, score: s, answered: done, completed: done && i === q.length - 1 }));
+		} catch (error) {
+			// Continue without persistence if storage is unavailable.
+		}
+	}
+
+	window.saveProgress = saveTryProgress;
+	if (window.thaiStudyShared) window.getProfile = thaiStudyShared.getProfile;
+
+	const saved = readProgress();
+
+	if (saved) {
+		s = saved.score;
+		if (saved.completed) {
+			done = true;
+			document.getElementById('quiz').innerHTML = '<h2 style="text-align:center">Quiz complete</h2><div class="final">' + s + '/' + q.length + '</div><p style="text-align:center"><a href="try.html">Start again</a> · <a href="index.html">All Guides</a></p>';
+			document.querySelector('#quiz a[href="try.html"]').addEventListener('click', () => {
+				try { localStorage.removeItem(progressKey); } catch (error) { /* Ignore storage restrictions. */ }
+			});
+		} else {
+			i = saved.answered ? saved.index + 1 : saved.index;
+			done = false;
+			render();
+		}
+	} else if (saved === null) {
+		i = 0;
+		s = 0;
+		done = false;
+		try { localStorage.removeItem(progressKey); } catch (error) { /* Ignore storage restrictions. */ }
+	}
+
+	document.getElementById('answers').addEventListener('click', saveTryProgress);
+	document.getElementById('next').addEventListener('click', saveTryProgress);
+	document.getElementById('saveProfile').addEventListener('click', () => {
+		if (window.thaiStudyShared) thaiStudyShared.saveProfile({ name: studentName.value.trim(), email: studentEmail.value.trim() });
+	});
+})();
+</script>
+</body></html>``

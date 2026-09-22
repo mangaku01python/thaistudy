@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>See, Look, Watch & Observe</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #eef8fd;
+        color: #123;
+      }
+      .shell {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px 16px 60px;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .brand {
+        font-weight: 900;
+        color: #082f49;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      button,
+      a.button-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 12px;
+        padding: 10px 14px;
+        background: #082f49;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 800;
+      }
+      .hero {
+        background: #fff;
+        border: 1px solid #cbddea;
+        border-radius: 22px;
+        padding: 24px;
+        box-shadow: 0 16px 40px rgba(8, 47, 73, 0.08);
+      }
+      .hero h1 {
+        margin: 0 0 10px;
+        color: #082f49;
+      }
+      .profile-line {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 10px 0 16px;
+      }
+      .profile-name {
+        font-weight: 800;
+        color: #082f49;
+      }
+      .quiz {
+        background: #fff;
+        border: 1px solid #cbddea;
+        border-radius: 22px;
+        padding: 24px;
+        box-shadow: 0 16px 40px rgba(8, 47, 73, 0.08);
+        margin-top: 18px;
+      }
+      .quiz-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-weight: 800;
+        color: #48677a;
+      }
+      .progress-track {
+        height: 8px;
+        background: #e3edf3;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0284c7, #22a7e6);
+        width: 0%;
+      }
+      .vision-question {
+        min-height: 110px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        margin: 16px 0 24px;
+        font-size: clamp(1.8rem, 7vw, 3.6rem);
+        color: #082f49;
+        font-weight: 900;
+      }
+      .vision-answers {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .vision-answer {
+        min-height: 72px;
+        padding: 14px 16px;
+        border: 2px solid #d4e3ec;
+        border-radius: 16px;
+        background: #fff;
+        text-align: left;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .vision-answer.correct {
+        background: #e9fbf4;
+        border-color: #087f5b;
+      }
+      .vision-answer.wrong {
+        background: #fff0ee;
+        border-color: #b42318;
+      }
+      .letter {
+        display: inline-grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+        border-radius: 8px;
+        background: #e7f2f8;
+        color: #18526f;
+      }
+      .vision-feedback {
+        display: none;
+        margin-top: 20px;
+        border-radius: 18px;
+        padding: 18px;
+        border: 1px solid transparent;
+      }
+      .vision-feedback.show {
+        display: block;
+      }
+      .vision-feedback.good {
+        background: #e9fbf4;
+        border-color: #a9e5d0;
+      }
+      .vision-feedback.bad {
+        background: #fff0ee;
+        border-color: #ffc9c3;
+      }
+      .vision-feedback h3 {
+        margin: 0 0 8px;
+      }
+      .vision-feedback-thai {
+        font-family: Tahoma, 'Noto Sans Thai', sans-serif;
+        font-size: clamp(2rem, 9vw, 3.5rem);
+        font-weight: 800;
+        color: #082f49;
+      }
+      .vision-feedback-roman {
+        color: #34596f;
+        font-weight: 700;
+      }
+      .vision-feedback-meaning {
+        margin-top: 8px;
+        font-weight: 800;
+      }
+      .vision-feedback-explain {
+        margin-top: 8px;
+        color: #4b6170;
+      }
+      .vision-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .vision-results {
+        margin-top: 18px;
+        background: #fff;
+        border: 1px solid #cbddea;
+        border-radius: 22px;
+        padding: 24px;
+        text-align: center;
+      }
+      .score-big {
+        font-size: clamp(3rem, 12vw, 5.5rem);
+        font-weight: 900;
+        color: #082f49;
+        line-height: 1.1;
+        margin: 10px 0;
+      }
+      .study-card {
+        background: #fff;
+        border: 1px solid #cbddea;
+        border-radius: 18px;
+        padding: 18px;
+        margin-top: 18px;
+      }
+      .study-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .study-item {
+        background: #f3f9fd;
+        border: 1px solid #dbeaf4;
+        border-radius: 14px;
+        padding: 14px;
+      }
+      .study-item .th {
+        font-family: Tahoma, 'Noto Sans Thai', sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-top: 8px;
+      }
+      .profile-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(8, 47, 73, 0.6);
+        padding: 20px;
+      }
+      .profile-box {
+        width: min(440px, 100%);
+        background: #fff;
+        border-radius: 20px;
+        padding: 24px;
+      }
+      .profile-box input {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 8px 0 12px;
+        padding: 10px 12px;
+        border: 1px solid #cbddea;
+        border-radius: 10px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 700px) {
+        .vision-answers, .study-grid {
+          grid-template-columns: 1fr;
+        }
+        .vision-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand">Thai Study</div>
+        <div class="nav">
+          <a href="../index.html" class="button-link">← All Guides</a>
+          <button id="profileButton" hidden>Edit Profile</button>
+        </div>
+      </header>
+
+      <div class="profile-line">
+        <span id="profileName" class="profile-name"></span>
+        <button id="profileCta">Create Profile</button>
+      </div>
+
+      <section class="hero">
+        <h1>See, Look, Watch & Observe</h1>
+        <p>Master the differences between เห็น, ดู, มอง, มองดู and มองเห็น.</p>
+        <p><a href="https://github.com/mangaku01python/thaistudy/issues/new?title=Vision%20guide%20feedback" target="_blank" rel="noopener">Report a problem or suggest a correction</a></p>
+      </section>
+
+      <section id="visionQuiz" class="quiz">
+        <div class="quiz-head">
+          <span id="visionProgress">Question 1 of 1</span>
+          <span id="visionScore">Score: 0</span>
+        </div>
+        <div class="progress-track"><div id="visionProgressFill" class="progress-fill"></div></div>
+        <div id="visionPrompt">Which word fits this situation?</div>
+        <div id="visionQuestion" class="vision-question"> </div>
+        <div id="visionAnswers" class="vision-answers"></div>
+
+        <div id="visionFeedback" class="vision-feedback">
+          <h3 id="visionFeedbackTitle">✓ Correct</h3>
+          <div id="visionFeedbackThai" class="vision-feedback-thai"></div>
+          <div id="visionFeedbackRoman" class="vision-feedback-roman"></div>
+          <div id="visionFeedbackMeaning" class="vision-feedback-meaning"></div>
+          <div id="visionFeedbackExplain" class="vision-feedback-explain"></div>
+          <div class="vision-actions">
+            <button id="visionShowGuide" type="button">Study Guide</button>
+            <button id="visionNext" type="button">Next Question →</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="visionStudy" class="study-card">
+        <h2>Study Guide</h2>
+        <div class="study-grid" id="visionStudyGrid"></div>
+      </section>
+
+      <section id="visionResults" class="vision-results" hidden>
+        <h2>Quiz complete</h2>
+        <div id="visionFinalScore" class="score-big">0/0</div>
+        <p id="visionResultMessage"></p>
+        <button id="visionRestart" type="button">Start a New Quiz</button>
+      </section>
+    </main>
+
+    <div id="profileModal" class="profile-modal" hidden>
+      <div class="profile-box">
+        <h2>Student Profile</h2>
+        <p>No password required. Progress is saved on this browser/device.</p>
+        <label>Name</label>
+        <input id="studentName" maxlength="50" required />
+        <label>Email (optional, for feedback)</label>
+        <input id="studentEmail" type="email" maxlength="120" />
+        <button id="saveProfile">Save Profile</button>
+      </div>
+    </div>
+
+    <script src="../shared.js"></script>
+    <script src="guide-shell.js"></script>
+    <script src="vision.js"></script>
+  </body>
+</html>
