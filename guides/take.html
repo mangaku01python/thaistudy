@@ -4,265 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Take Expressions</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background: #eef8fd;
-        color: #123;
-      }
-      .shell {
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 24px 16px 60px;
-      }
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 20px;
-      }
-      .brand {
-        font-weight: 900;
-        color: #082f49;
-      }
-      .nav {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      button,
-      a.button-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: 0;
-        border-radius: 12px;
-        padding: 10px 14px;
-        background: #082f49;
-        color: white;
-        text-decoration: none;
-        cursor: pointer;
-        font-weight: 800;
-      }
-      .hero {
-        background: #fff;
-        border: 1px solid #cbddea;
-        border-radius: 22px;
-        padding: 24px;
-        box-shadow: 0 16px 40px rgba(8, 47, 73, 0.08);
-      }
-      .hero h1 {
-        margin: 0 0 10px;
-        color: #082f49;
-      }
-      .profile-line {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin: 10px 0 16px;
-      }
-      .profile-name {
-        font-weight: 800;
-        color: #082f49;
-      }
-      .quiz {
-        background: #fff;
-        border: 1px solid #cbddea;
-        border-radius: 22px;
-        padding: 24px;
-        box-shadow: 0 16px 40px rgba(8, 47, 73, 0.08);
-        margin-top: 18px;
-      }
-      .quiz-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 12px;
-        font-weight: 800;
-        color: #48677a;
-      }
-      .progress-track {
-        height: 8px;
-        background: #e3edf3;
-        border-radius: 999px;
-        overflow: hidden;
-        margin-bottom: 20px;
-      }
-      .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #0284c7, #22a7e6);
-        width: 0%;
-      }
-      .take-question {
-        min-height: 110px;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        margin: 16px 0 24px;
-        font-weight: 900;
-      }
-      .take-question.english {
-        font-size: clamp(1.8rem, 7vw, 3.6rem);
-        color: #082f49;
-      }
-      .take-question.thai {
-        font-family: Tahoma, 'Noto Sans Thai', sans-serif;
-        font-size: clamp(2.8rem, 12vw, 6rem);
-        color: #082f49;
-      }
-      .take-answers {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-      .take-answer {
-        min-height: 72px;
-        padding: 14px 16px;
-        border: 2px solid #d4e3ec;
-        border-radius: 16px;
-        background: #fff;
-        color: #12212d;
-        text-align: left;
-        font-weight: 800;
-        cursor: pointer;
-      }
-      .take-answer.correct {
-        background: #e9fbf4;
-        border-color: #087f5b;
-      }
-      .take-answer.wrong {
-        background: #fff0ee;
-        border-color: #b42318;
-      }
-      .letter {
-        display: inline-grid;
-        place-items: center;
-        width: 30px;
-        height: 30px;
-        margin-right: 10px;
-        border-radius: 8px;
-        background: #e7f2f8;
-        color: #18526f;
-      }
-      .take-feedback {
-        display: none;
-        margin-top: 20px;
-        border-radius: 18px;
-        padding: 18px;
-        border: 1px solid transparent;
-      }
-      .take-feedback.show {
-        display: block;
-      }
-      .take-feedback.good {
-        background: #e9fbf4;
-        border-color: #a9e5d0;
-      }
-      .take-feedback.bad {
-        background: #fff0ee;
-        border-color: #ffc9c3;
-      }
-      .take-feedback h3 {
-        margin: 0 0 8px;
-      }
-      .take-feedback-thai {
-        font-family: Tahoma, 'Noto Sans Thai', sans-serif;
-        font-size: clamp(2rem, 9vw, 3.5rem);
-        font-weight: 800;
-        color: #082f49;
-      }
-      .take-feedback-roman {
-        color: #34596f;
-        font-weight: 700;
-      }
-      .take-feedback-meaning {
-        margin-top: 8px;
-        font-weight: 800;
-      }
-      .take-feedback-explain {
-        margin-top: 8px;
-        color: #4b6170;
-      }
-      .take-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 18px;
-      }
-      .take-results {
-        margin-top: 18px;
-        background: #fff;
-        border: 1px solid #cbddea;
-        border-radius: 22px;
-        padding: 24px;
-        text-align: center;
-      }
-      .score-big {
-        font-size: clamp(3rem, 12vw, 5.5rem);
-        font-weight: 900;
-        color: #082f49;
-        line-height: 1.1;
-        margin: 10px 0;
-      }
-      .study-card {
-        background: #fff;
-        border: 1px solid #cbddea;
-        border-radius: 18px;
-        padding: 18px;
-        margin-top: 18px;
-      }
-      .study-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-      .study-item {
-        background: #f3f9fd;
-        border: 1px solid #dbeaf4;
-        border-radius: 14px;
-        padding: 14px;
-      }
-      .study-item .th {
-        font-family: Tahoma, 'Noto Sans Thai', sans-serif;
-        font-size: 2rem;
-        font-weight: 800;
-        margin-top: 8px;
-      }
-      .profile-modal {
-        position: fixed;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        background: rgba(8, 47, 73, 0.6);
-        padding: 20px;
-      }
-      .profile-box {
-        width: min(440px, 100%);
-        background: #fff;
-        border-radius: 20px;
-        padding: 24px;
-      }
-      .profile-box input {
-        width: 100%;
-        box-sizing: border-box;
-        margin: 8px 0 12px;
-        padding: 10px 12px;
-        border: 1px solid #cbddea;
-        border-radius: 10px;
-      }
-      [hidden] {
-        display: none !important;
-      }
-      @media (max-width: 700px) {
-        .take-answers, .study-grid {
-          grid-template-columns: 1fr;
-        }
-        .take-actions {
-          flex-direction: column;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="guide.css" />
   </head>
   <body>
     <main class="shell">
@@ -282,7 +24,6 @@
       <section class="hero">
         <h1>Take Expressions</h1>
         <p>Learn common English expressions with “take” and their Thai meanings.</p>
-        <p><a href="https://github.com/mangaku01python/thaistudy/issues/new?title=Take%20Expressions%20feedback" target="_blank" rel="noopener">Report a problem or suggest a correction</a></p>
       </section>
 
       <section id="takeQuiz" class="quiz">
@@ -294,6 +35,7 @@
         <div id="takePrompt">Choose the Thai meaning.</div>
         <div id="takeQuestion" class="take-question english"> </div>
         <div id="takeAnswers" class="take-answers"></div>
+        <button type="button" id="takeReportQuestion" class="report-btn">Report a problem with this question</button>
 
         <div id="takeFeedback" class="take-feedback">
           <h3 id="takeFeedbackTitle">✓ Correct</h3>
@@ -330,6 +72,20 @@
         <label>Email (optional, for feedback)</label>
         <input id="studentEmail" type="email" maxlength="120" />
         <button id="saveProfile">Save Profile</button>
+      </div>
+    </div>
+
+    <div id="lineFeedbackModal" class="feedback-modal" role="dialog" aria-modal="true" aria-labelledby="lineFeedbackTitle" aria-describedby="lineFeedbackSummary" hidden>
+      <div class="feedback-box">
+        <h2 id="lineFeedbackTitle">Send feedback</h2>
+        <p id="lineFeedbackSummary"></p>
+        <label for="lineFeedbackText">What should be corrected or changed?</label>
+        <textarea id="lineFeedbackText" placeholder="What should be corrected or changed?"></textarea>
+        <div class="row">
+          <button id="lineFeedbackCancel" class="feedback-cancel">Cancel</button>
+          <button id="lineFeedbackSend" class="feedback-send">Send to Thai Study</button>
+        </div>
+        <p id="lineFeedbackStatus" role="status"></p>
       </div>
     </div>
 

@@ -1,6 +1,16 @@
 (function () {
   const guideName = 'take';
   const PROGRESS_KEY = 'thaiStudyProgress_take';
+  const FEEDBACK_ENDPOINT = 'https://thai-study-feedback.mangaku01-python.workers.dev/feedback';
+  const takeReportQuestion = document.getElementById('takeReportQuestion');
+  const lineFeedbackModal = document.getElementById('lineFeedbackModal');
+  const lineFeedbackSummary = document.getElementById('lineFeedbackSummary');
+  const lineFeedbackText = document.getElementById('lineFeedbackText');
+  const lineFeedbackStatus = document.getElementById('lineFeedbackStatus');
+  const lineFeedbackCancel = document.getElementById('lineFeedbackCancel');
+  const lineFeedbackSend = document.getElementById('lineFeedbackSend');
+  let pendingFeedback = null;
+  let feedbackSession = 0;
 
   const vocabulary = [
     ["Take out / take away","เอาออกไป","ao ook bpai","Remove something or carry it outside.","เอาออกไป"],
@@ -126,6 +136,23 @@
     studyGrid.innerHTML = vocabulary.map((item, index) => `<article class="study-item"><div>${String(index + 1).padStart(2, '0')}</div><h3>${item.en}</h3><div class="th">${item.th}</div><div>${item.roman}</div><p>${item.note}</p></article>`).join('');
   }
 
+  function openLineFeedback(data) {
+    feedbackSession += 1;
+    lineFeedbackSend.disabled = false;
+    pendingFeedback = data;
+    lineFeedbackSummary.textContent = `Question ${data.questionNumber} · ${data.guide}`;
+    lineFeedbackText.value = '';
+    lineFeedbackStatus.textContent = '';
+    lineFeedbackModal.hidden = false;
+    lineFeedbackText.focus();
+  }
+
+  function closeLineFeedback() {
+    feedbackSession += 1;
+    lineFeedbackModal.hidden = true;
+    document.getElementById(guideName + 'ReportQuestion').focus();
+  }
+
   function selectAnswer(button, chosenIndex) {
     if (state.done) return;
     const question = state.questions[state.index];
@@ -218,6 +245,66 @@
     document.getElementById('takeRestart').addEventListener('click', restart);
     document.getElementById('takeShowGuide').addEventListener('click', () => {
       document.getElementById('takeStudy').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    lineFeedbackCancel.addEventListener('click', closeLineFeedback);
+    lineFeedbackModal.addEventListener('click', (event) => {
+      if (event.target === lineFeedbackModal) closeLineFeedback();
+    });
+    lineFeedbackModal.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeLineFeedback();
+      if (event.key === 'Tab') {
+        const last = lineFeedbackSend.disabled ? lineFeedbackCancel : lineFeedbackSend;
+        if (event.shiftKey && document.activeElement === lineFeedbackText) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          lineFeedbackText.focus();
+        }
+      }
+    });
+    lineFeedbackSend.addEventListener('click', async () => {
+      if (lineFeedbackSend.disabled) return;
+      const session = feedbackSession;
+      const feedback = lineFeedbackText.value.trim();
+      if (!feedback) return lineFeedbackText.focus();
+
+      const profile = window.thaiStudyShared ? window.thaiStudyShared.getProfile() : null;
+      lineFeedbackSend.disabled = true;
+      lineFeedbackStatus.textContent = 'Sending…';
+      try {
+        const response = await fetch(FEEDBACK_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...pendingFeedback,
+            studentName: profile && profile.name ? profile.name : 'Not provided',
+            studentEmail: profile && profile.email ? profile.email : 'Not provided',
+            feedback
+          })
+        });
+        if (session !== feedbackSession) return;
+        if (!response.ok) throw new Error('send failed');
+        lineFeedbackStatus.textContent = '✓ Feedback sent. Thank you.';
+        setTimeout(() => {
+          if (session === feedbackSession) closeLineFeedback();
+        }, 900);
+      } catch (error) {
+        if (session !== feedbackSession) return;
+        lineFeedbackStatus.textContent = 'Could not send feedback. Please try again.';
+      } finally {
+        if (session === feedbackSession) lineFeedbackSend.disabled = false;
+      }
+    });
+    takeReportQuestion.addEventListener('click', () => {
+      const question = state.questions[state.index];
+      openLineFeedback({
+        guide: 'Take Expressions',
+        questionNumber: (state.index + 1) + ' of ' + state.questions.length,
+        english: question.item.en,
+        thai: question.item.th,
+        answer: question.flip ? question.item.en : question.item.th
+      });
     });
   }
 
